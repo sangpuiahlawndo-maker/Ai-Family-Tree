@@ -1,20 +1,20 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+# AncestryLive Deployment Guide
 
-This contains everything you need to run your app locally.
+This project is optimized for deployment on **Netlify** or **Vercel**.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1ZsKxsL1Gwp91qovf25oaKtdBx-cBxhDc
+## 1. Prerequisites
+- A GitHub repository with this code.
+- A Google Gemini API Key.
 
-## Run Locally
+## 2. Deploying to Netlify
+1. Connect your GitHub repo to Netlify.
+2. Set the **Build Command** to `npm run build`.
+3. Set the **Publish Directory** to `dist`.
+4. **CRITICAL**: Go to Site Settings > Environment Variables and add:
+   - `API_KEY`: (Your Gemini API Key)
 
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 3. Local Development
+1. Run `npm install`.
+2. Run `npm run dev`.
+3. Open `http://localhost:3000`.
