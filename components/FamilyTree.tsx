@@ -8,6 +8,7 @@ interface MemberCardProps {
   hoverBorderClass: string;
   avatarBgClass: string;
   defaultIcon: string;
+  generation: number;
   children?: React.ReactNode;
 }
 
@@ -17,6 +18,7 @@ const MemberCard: React.FC<MemberCardProps> = ({
   hoverBorderClass, 
   avatarBgClass, 
   defaultIcon,
+  generation,
   children 
 }) => {
   const [expanded, setExpanded] = useState(false);
@@ -33,6 +35,11 @@ const MemberCard: React.FC<MemberCardProps> = ({
       onClick={() => onEdit(member)}
       className={`group relative cursor-pointer flex flex-col items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-200 ${hoverBorderClass} transition-all duration-300 w-48 z-10 hover:shadow-xl hover:-translate-y-1`}
     >
+      {/* Generation Badge */}
+      <div className="absolute -top-3 -left-3 bg-slate-900 text-white text-[9px] font-black px-2.5 py-1 rounded-full shadow-lg border-2 border-white z-30 uppercase tracking-tighter">
+        Gen {generation}
+      </div>
+
       <div className={`w-20 h-20 rounded-full ${avatarBgClass} flex items-center justify-center overflow-hidden mb-3 border-4 border-white shadow-md shrink-0`}>
         {member.image ? (
           <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
@@ -89,9 +96,10 @@ interface NodeProps {
   onAddChild: (parentId: string) => void;
   onAddSpouse: (memberId: string) => void;
   onEdit: (member: FamilyMember) => void;
+  level?: number;
 }
 
-const FamilyNode: React.FC<NodeProps> = ({ memberId, members, onAddChild, onAddSpouse, onEdit }) => {
+const FamilyNode: React.FC<NodeProps> = ({ memberId, members, onAddChild, onAddSpouse, onEdit, level = 1 }) => {
   const member = members[memberId];
   if (!member) return null;
 
@@ -104,6 +112,7 @@ const FamilyNode: React.FC<NodeProps> = ({ memberId, members, onAddChild, onAddS
         <MemberCard
           member={member}
           onEdit={onEdit}
+          generation={level}
           hoverBorderClass="hover:border-indigo-500"
           avatarBgClass={member.gender === 'male' ? 'bg-indigo-50 text-indigo-300' : member.gender === 'female' ? 'bg-rose-50 text-rose-300' : 'bg-slate-50 text-slate-300'}
           defaultIcon={member.gender === 'male' ? 'fa-user-tie' : member.gender === 'female' ? 'fa-user-nurse' : 'fa-user'}
@@ -141,6 +150,7 @@ const FamilyNode: React.FC<NodeProps> = ({ memberId, members, onAddChild, onAddS
               <MemberCard
                 member={spouse}
                 onEdit={onEdit}
+                generation={level}
                 hoverBorderClass="hover:border-rose-400"
                 avatarBgClass={spouse.gender === 'female' ? 'bg-rose-50 text-rose-300' : spouse.gender === 'male' ? 'bg-indigo-50 text-indigo-300' : 'bg-slate-50 text-slate-300'}
                 defaultIcon={spouse.gender === 'female' ? 'fa-user-nurse' : spouse.gender === 'male' ? 'fa-user-tie' : 'fa-user'}
@@ -182,6 +192,7 @@ const FamilyNode: React.FC<NodeProps> = ({ memberId, members, onAddChild, onAddS
                 onAddChild={onAddChild} 
                 onAddSpouse={onAddSpouse}
                 onEdit={onEdit} 
+                level={level + 1}
               />
             </div>
           ))}

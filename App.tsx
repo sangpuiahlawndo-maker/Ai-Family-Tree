@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { FamilyMember, AppTab } from './types';
 import FamilyNode from './components/FamilyTree';
 import VoiceAssistant from './components/VoiceAssistant';
@@ -66,6 +66,16 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<FamilyMember | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Helper to calculate total depth of the tree
+  const calculateMaxDepth = (mbs: Record<string, FamilyMember>, id: string): number => {
+    const member = mbs[id];
+    if (!member || member.childrenIds.length === 0) return 1;
+    const childDepths = member.childrenIds.map(childId => calculateMaxDepth(mbs, childId));
+    return 1 + Math.max(...childDepths);
+  };
+
+  const totalGenerations = useMemo(() => calculateMaxDepth(members, 'root'), [members]);
 
   const handleAddChild = (parentId: string) => {
     const newId = `member_${Date.now()}`;
@@ -331,7 +341,7 @@ const App: React.FC = () => {
                     </div>
                     <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Generations</p>
-                        <p className="text-3xl font-black text-rose-500">3</p>
+                        <p className="text-3xl font-black text-rose-500">{totalGenerations}</p>
                     </div>
                 </div>
                 <div className="space-y-4">
