@@ -1,5 +1,5 @@
 {
-  "name": "Ai Family Tree 2",
+  "name": "Ai Family Tree ",
   "description": "A comprehensive family tree application featuring interactive lineage visualization, AI-powered voice conversations for heritage storytelling, intelligent family history research via Search Grounding, and creative portrait editing for historical photos.",
   "requestFramePermissions": [
     "camera",

@@ -67,7 +67,6 @@ const App: React.FC = () => {
   const [editingMember, setEditingMember] = useState<FamilyMember | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Helper to calculate total depth of the tree
   const calculateMaxDepth = (mbs: Record<string, FamilyMember>, id: string): number => {
     const member = mbs[id];
     if (!member || member.childrenIds.length === 0) return 1;
@@ -141,178 +140,175 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col selection:bg-indigo-100 selection:text-indigo-600">
-      {/* Dynamic Header */}
-      <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/60 px-8 py-4 flex items-center justify-between sticky top-0 z-40 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-        <div className="flex items-center space-x-4">
-          <div className="bg-indigo-600 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
-            <i className="fas fa-tree-city text-xl"></i>
+    <div className="h-screen flex flex-col bg-slate-50 overflow-hidden">
+      {/* Responsive Header */}
+      <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200/60 px-4 sm:px-8 py-2 sm:py-4 flex items-center justify-between z-40 shadow-sm shrink-0">
+        <div className="flex items-center space-x-3">
+          <div className="bg-indigo-600 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shadow-lg">
+            <i className="fas fa-tree-city text-base sm:text-xl"></i>
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">AncestryLive</h1>
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-500 mt-1">Legacy Preservation Platform</p>
+            <h1 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight leading-none">AncestryLive</h1>
+            <p className="text-[7px] sm:text-[10px] font-black uppercase tracking-[0.15em] text-indigo-500 mt-0.5">Heritage Studio</p>
           </div>
         </div>
 
-        <div className="hidden lg:flex items-center bg-slate-100/80 p-1.5 rounded-2xl">
+        <div className="hidden lg:flex items-center bg-slate-100/80 p-1 rounded-2xl">
           <TabButton active={activeTab === AppTab.TREE} onClick={() => setActiveTab(AppTab.TREE)} icon="fa-sitemap" label="Lineage" />
           <TabButton active={activeTab === AppTab.RESEARCH} onClick={() => setActiveTab(AppTab.RESEARCH)} icon="fa-building-columns" label="Archive" />
           <TabButton active={activeTab === AppTab.VOICE} onClick={() => setActiveTab(AppTab.VOICE)} icon="fa-microphone-lines" label="Heritage Talk" />
           <TabButton active={activeTab === AppTab.GALLERY} onClick={() => setActiveTab(AppTab.GALLERY)} icon="fa-camera-retro" label="Refiner" />
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="hidden sm:block text-right">
                 <p className="text-xs font-bold text-slate-800">John Doe</p>
-                <p className="text-[10px] text-slate-400 font-medium">Curator</p>
+                <p className="text-[9px] text-slate-400 font-medium">Curator</p>
             </div>
-            <button className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center hover:bg-white hover:border-indigo-200 transition-all">
-                <i className="fas fa-user-circle text-slate-400 text-xl"></i>
+            <button className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center">
+                <i className="fas fa-user-circle text-slate-400 text-lg"></i>
             </button>
         </div>
       </header>
 
-      {/* Main Feature Viewport */}
-      <main className="flex-1 overflow-auto bg-slate-50/50 custom-scrollbar relative">
-        {activeTab === AppTab.TREE && (
-          <div className="p-12 md:p-24 flex justify-center min-w-max">
-            <FamilyNode 
-              memberId="root" 
-              members={members} 
-              onAddChild={handleAddChild} 
-              onAddSpouse={handleAddSpouse}
-              onEdit={handleEditMember} 
-            />
-          </div>
-        )}
-        {activeTab === AppTab.RESEARCH && <Researcher />}
-        {activeTab === AppTab.VOICE && <VoiceAssistant />}
-        {activeTab === AppTab.GALLERY && <ImageEditor />}
+      {/* Main Viewport */}
+      <main className="flex-1 overflow-auto bg-slate-50 relative touch-scroll">
+        <div className="h-full w-full">
+          {activeTab === AppTab.TREE && (
+            <div className="p-10 sm:p-24 flex justify-center min-w-max">
+              <FamilyNode 
+                memberId="root" 
+                members={members} 
+                onAddChild={handleAddChild} 
+                onAddSpouse={handleAddSpouse}
+                onEdit={handleEditMember} 
+              />
+            </div>
+          )}
+          {activeTab === AppTab.RESEARCH && <Researcher />}
+          {activeTab === AppTab.VOICE && <VoiceAssistant />}
+          {activeTab === AppTab.GALLERY && <ImageEditor />}
+        </div>
       </main>
 
-      {/* Responsive Mobile Navigator */}
-      <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200 px-4 py-3 flex items-center justify-around sticky bottom-0 z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+      {/* Mobile Sticky Navigation */}
+      <nav className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-slate-200 flex items-center justify-around z-40 pb-safe shadow-lg">
         <MobileTabButton active={activeTab === AppTab.TREE} onClick={() => setActiveTab(AppTab.TREE)} icon="fa-sitemap" label="Tree" />
         <MobileTabButton active={activeTab === AppTab.RESEARCH} onClick={() => setActiveTab(AppTab.RESEARCH)} icon="fa-building-columns" label="Archive" />
         <MobileTabButton active={activeTab === AppTab.VOICE} onClick={() => setActiveTab(AppTab.VOICE)} icon="fa-microphone-lines" label="Talk" />
-        <MobileTabButton active={activeTab === AppTab.GALLERY} onClick={() => setActiveTab(AppTab.GALLERY)} icon="fa-camera-retro" label="Editor" />
+        <MobileTabButton active={activeTab === AppTab.GALLERY} onClick={() => setActiveTab(AppTab.GALLERY)} icon="fa-camera-retro" label="Refiner" />
       </nav>
 
-      {/* Profile Editor Modal */}
+      {/* Heritage Profile Modal (Bottom Sheet on Mobile) */}
       {isModalOpen && editingMember && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md animate-fadeIn">
-          <div className="bg-white rounded-[3rem] w-full max-w-2xl overflow-hidden shadow-2xl animate-scaleIn border border-white/20">
-            <div className="bg-indigo-600 px-8 py-6 flex justify-between items-center text-white">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white mobile-bottom-sheet w-full sm:max-w-2xl sm:rounded-[2.5rem] overflow-hidden shadow-2xl animate-slideUp sm:animate-scaleIn border border-slate-100 flex flex-col">
+            <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto my-3 sm:hidden shrink-0"></div>
+            
+            <div className="bg-indigo-600 px-5 sm:px-8 py-4 sm:py-6 flex justify-between items-center text-white shrink-0">
               <div>
-                <h3 className="text-xl font-black">Heritage Profile</h3>
-                <p className="text-xs text-indigo-200 font-bold uppercase tracking-widest mt-0.5">Edit Personal Details</p>
+                <h3 className="text-lg sm:text-xl font-black">Heritage Profile</h3>
+                <p className="text-[10px] text-indigo-200 font-bold uppercase tracking-widest mt-0.5">Lineage Editing</p>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all">
+              <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all active:scale-90">
                 <i className="fas fa-times"></i>
               </button>
             </div>
-            <form onSubmit={saveMember} className="p-10 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
-              {/* Profile Hero Section */}
-              <div className="flex flex-col items-center mb-8">
-                <div className="relative group">
-                  <div className={`w-32 h-32 rounded-[2.5rem] border-4 border-slate-50 shadow-xl overflow-hidden flex items-center justify-center ${editingMember.gender === 'male' ? 'bg-indigo-50' : 'bg-rose-50'}`}>
+            
+            <form onSubmit={saveMember} className="p-6 sm:p-10 space-y-5 overflow-y-auto touch-scroll flex-1 pb-12 sm:pb-10">
+              <div className="flex flex-col items-center mb-4">
+                <div className="relative">
+                  <div className={`w-24 h-24 sm:w-32 sm:h-32 rounded-3xl border-4 border-slate-50 shadow-lg overflow-hidden flex items-center justify-center ${editingMember.gender === 'male' ? 'bg-indigo-50' : 'bg-rose-50'}`}>
                     {editingMember.image ? (
                       <img src={editingMember.image} alt="Profile" className="w-full h-full object-cover" />
                     ) : (
-                      <i className={`fas ${editingMember.gender === 'male' ? 'fa-user-tie text-indigo-200' : 'fa-user-nurse text-rose-200'} text-5xl`}></i>
+                      <i className={`fas ${editingMember.gender === 'male' ? 'fa-user-tie text-indigo-200' : 'fa-user-nurse text-rose-200'} text-4xl sm:text-5xl`}></i>
                     )}
                   </div>
                   <button 
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-600 text-white rounded-2xl flex items-center justify-center border-4 border-white shadow-xl hover:bg-indigo-700 transition-all hover:scale-110 active:scale-95"
+                    className="absolute -bottom-2 -right-2 w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center border-4 border-white shadow-xl active:scale-90"
                   >
-                    <i className="fas fa-camera text-sm"></i>
+                    <i className="fas fa-camera text-xs"></i>
                   </button>
                 </div>
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  className="hidden" 
-                  accept="image/*" 
-                  onChange={handlePhotoUpload} 
-                />
+                <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handlePhotoUpload} />
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-5">
                 <div className="group">
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Full Legal Name</label>
+                  <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Full Legal Name</label>
                   <input 
                     type="text" 
-                    autoFocus
                     value={editingMember.name} 
                     onChange={e => setEditingMember({...editingMember, name: e.target.value})}
-                    className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition-all text-slate-800 font-bold bg-slate-50/30" 
+                    className="w-full px-5 py-4 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all text-slate-800 font-bold bg-slate-50/50" 
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Birth Year</label>
+                    <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Birth Year</label>
                     <input 
                       type="text" 
                       value={editingMember.birthDate || ''} 
                       onChange={e => setEditingMember({...editingMember, birthDate: e.target.value})}
                       placeholder="YYYY"
-                      className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition-all font-bold bg-slate-50/30" 
+                      className="w-full px-5 py-4 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all font-bold bg-slate-50/50" 
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Death Year (if applicable)</label>
+                    <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Death Year</label>
                     <input 
                       type="text" 
                       value={editingMember.deathDate || ''} 
                       onChange={e => setEditingMember({...editingMember, deathDate: e.target.value})}
                       placeholder="YYYY"
-                      className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition-all font-bold bg-slate-50/30" 
+                      className="w-full px-5 py-4 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all font-bold bg-slate-50/50" 
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Phone Reference</label>
+                        <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Contact Reference</label>
                         <input 
                             type="tel" 
                             value={editingMember.phone || ''} 
                             onChange={e => setEditingMember({...editingMember, phone: e.target.value})}
-                            placeholder="+1 234 567 890"
-                            className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition-all font-bold bg-slate-50/30" 
+                            placeholder="+1..."
+                            className="w-full px-5 py-4 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all font-bold bg-slate-50/50" 
                         />
                     </div>
                     <div>
-                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Gender Identity</label>
+                        <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Gender</label>
                         <select 
                             value={editingMember.gender} 
                             onChange={e => setEditingMember({...editingMember, gender: e.target.value as any})}
-                            className="w-full px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition-all font-bold bg-white"
+                            className="w-full px-5 py-4 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all font-bold bg-white"
                         >
                             <option value="male">Male</option>
                             <option value="female">Female</option>
-                            <option value="other">Other / Non-Binary</option>
+                            <option value="other">Other</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 px-1">Life Biography & Heritage</label>
+                  <label className="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 px-1">Life Biography</label>
                   <textarea 
                     value={editingMember.bio || ''} 
                     onChange={e => setEditingMember({...editingMember, bio: e.target.value})}
-                    placeholder="Tell their story, achievements, and unique personality traits..."
-                    className="w-full h-32 px-6 py-4 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 outline-none transition-all bg-slate-50/30 resize-none font-medium leading-relaxed"
+                    placeholder="Their life story and heritage..."
+                    className="w-full h-24 sm:h-32 px-5 py-4 border-2 border-slate-100 rounded-xl focus:border-indigo-500 outline-none transition-all bg-slate-50/50 resize-none font-medium text-sm"
                   />
                 </div>
               </div>
 
-              <div className="pt-6">
-                <button type="submit" className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-3xl font-black text-lg transition-all shadow-xl shadow-indigo-100 active:scale-[0.98]">
-                    Commit Changes
+              <div className="pt-2">
+                <button type="submit" className="w-full py-4 sm:py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-black text-lg transition-all shadow-xl shadow-indigo-50 active:scale-95">
+                    Update Profile
                 </button>
               </div>
             </form>
@@ -320,41 +316,36 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Stats Overlay Shortcut */}
+      {/* Stats Button */}
       <button 
         onClick={() => setActiveTab(AppTab.STATS)}
-        className="fixed bottom-24 right-8 lg:bottom-12 lg:right-12 w-16 h-16 bg-slate-900 text-white rounded-3xl flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all z-40 group"
+        className="fixed bottom-24 right-4 sm:bottom-12 sm:right-12 w-14 h-14 sm:w-16 sm:h-16 bg-slate-900 text-white rounded-2xl shadow-2xl flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-40"
       >
-        <i className="fas fa-chart-pie text-xl group-hover:rotate-12 transition-transform"></i>
+        <i className="fas fa-chart-pie text-xl"></i>
       </button>
 
-      {/* Simple Stats Modal */}
+      {/* Stats Modal */}
       {activeTab === AppTab.STATS && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-md">
-             <div className="bg-white rounded-[3rem] w-full max-w-lg p-12 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-full opacity-50 -translate-y-12 translate-x-12"></div>
-                <h2 className="text-3xl font-black text-slate-900 mb-8">Lineage Stats</h2>
-                <div className="grid grid-cols-2 gap-4 mb-10">
-                    <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Members</p>
-                        <p className="text-3xl font-black text-indigo-600">{Object.keys(members).length}</p>
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+             <div className="bg-white mobile-bottom-sheet w-full sm:max-w-md p-8 sm:p-12 sm:rounded-[2.5rem] shadow-2xl animate-slideUp sm:animate-scaleIn relative">
+                <div className="w-12 h-1.5 bg-slate-100 rounded-full mx-auto mb-6 sm:hidden"></div>
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mb-8 tracking-tight">Lineage Summary</h2>
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="bg-indigo-50/50 p-5 rounded-3xl border border-indigo-100">
+                        <p className="text-[9px] font-black text-indigo-400 uppercase tracking-widest mb-1">Total Members</p>
+                        <p className="text-3xl font-black text-indigo-700">{Object.keys(members).length}</p>
                     </div>
-                    <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Generations</p>
-                        <p className="text-3xl font-black text-rose-500">{totalGenerations}</p>
+                    <div className="bg-rose-50/50 p-5 rounded-3xl border border-rose-100">
+                        <p className="text-[9px] font-black text-rose-400 uppercase tracking-widest mb-1">Generations</p>
+                        <p className="text-3xl font-black text-rose-600">{totalGenerations}</p>
                     </div>
                 </div>
-                <div className="space-y-4">
-                    <p className="text-sm text-slate-500 leading-relaxed italic">
-                        "A family tree is only as strong as the stories told about its branches."
-                    </p>
-                    <button 
-                        onClick={() => setActiveTab(AppTab.TREE)}
-                        className="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold transition-all hover:bg-slate-800"
-                    >
-                        Back to Tree
-                    </button>
-                </div>
+                <button 
+                    onClick={() => setActiveTab(AppTab.TREE)}
+                    className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black transition-all hover:bg-slate-800 active:scale-95"
+                >
+                    Return to Tree
+                </button>
              </div>
           </div>
       )}
@@ -365,7 +356,7 @@ const App: React.FC = () => {
 const TabButton: React.FC<{ active: boolean; onClick: () => void; icon: string; label: string }> = ({ active, onClick, icon, label }) => (
   <button 
     onClick={onClick}
-    className={`px-5 py-2.5 rounded-xl flex items-center space-x-2 transition-all duration-300 ${active ? 'bg-white shadow-md text-indigo-600 scale-[1.02]' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}
+    className={`px-5 py-2 rounded-xl flex items-center space-x-2 transition-all duration-300 ${active ? 'bg-white shadow-md text-indigo-600' : 'text-slate-500 hover:text-slate-800'}`}
   >
     <i className={`fas ${icon} text-sm`}></i>
     <span className="text-xs font-black uppercase tracking-widest">{label}</span>
@@ -375,10 +366,10 @@ const TabButton: React.FC<{ active: boolean; onClick: () => void; icon: string; 
 const MobileTabButton: React.FC<{ active: boolean; onClick: () => void; icon: string; label: string }> = ({ active, onClick, icon, label }) => (
   <button 
     onClick={onClick}
-    className={`flex flex-col items-center p-3 rounded-2xl transition-all ${active ? 'text-indigo-600 bg-indigo-50/50' : 'text-slate-400'}`}
+    className={`flex flex-col items-center justify-center w-full py-3 transition-all ${active ? 'text-indigo-600 bg-indigo-50/50' : 'text-slate-400'}`}
   >
-    <i className={`fas ${icon} text-lg mb-1.5`}></i>
-    <span className="text-[9px] font-black uppercase tracking-widest">{label}</span>
+    <i className={`fas ${icon} text-lg mb-1`}></i>
+    <span className="text-[8px] font-black uppercase tracking-widest">{label}</span>
   </button>
 );
 
